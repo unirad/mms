@@ -10,6 +10,15 @@ public class Duration {
 		seconds = (int)Math.round(((double)miliseconds/1000));
 	    minutes = seconds/60;
 	    humanReadableForm = getMinutes() + ":" + getSeconds()%60;
+	    if((getSeconds()%60)<10)
+	    {
+	    	humanReadableForm = getMinutes() + ":0" + getSeconds()%60;
+	    }
+	    if(getMinutes()<10)
+	    {
+	    	humanReadableForm = "0"+humanReadableForm;
+	    }
+	    
 	    
 	}
 	public int getMinutes() {
