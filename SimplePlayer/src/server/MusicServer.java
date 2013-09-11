@@ -2,9 +2,11 @@ package server;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -22,12 +24,20 @@ public class MusicServer {
 	BufferedInputStream bis;
 	FileInputStream fis;
 	ServerSocket ss;
+	ArrayList<BufferedOutputStream> outputStreams;
+	final int MAX_CLIENTS;
 	
 	public MusicServer(String[] playList, int port){
+		
+		//TODO: this can be configured using a config attribute
+		// max clients.
+		MAX_CLIENTS = 2;
+		
+		
 		if(playList.length <1)
 		{
 			System.out.println("Invalid playlist. Playlist must have atleast one entry");
-			System.exit(10);
+			System.exit(1);
 			
 		}
 		else
@@ -50,16 +60,23 @@ public class MusicServer {
 		System.out.println("Starting music server");
 		try {
 			ss = new ServerSocket(port);
+			outputStreams = new ArrayList<BufferedOutputStream>();
 			System.out.println("Server started on port : " + port );
 			fis = new FileInputStream(currFile);
 			bis = new BufferedInputStream(fis);
-			Socket s = ss.accept();
-			BufferedOutputStream bos = new BufferedOutputStream(s.getOutputStream());
-			while(bis.available()>0)
-			{
-				bos.write(bis.read());
+			
+			
+			int count = 0;
+			while(count<MAX_CLIENTS){
+				Socket s = ss.accept();
+				String remoteHostname = s.getInetAddress().getHostName();
+				System.out.println("Host : " + remoteHostname + " added to listening list");
+				BufferedOutputStream bos = new BufferedOutputStream(s.getOutputStream());
+				outputStreams.add(bos);
+				count++;
 			}
-			System.out.println("End of song");
+			
+			System.out.println("Max number of clients have joined.");
 					
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -68,13 +85,34 @@ public class MusicServer {
 		
 	}
 	
+	public void playSong(){
+
+		try {
+			while(bis.available()>0)
+			{
+				int byt = bis.read();
+				for(BufferedOutputStream bos : outputStreams){
+					bos.write(byt);
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("Error: IOException while playing song.");
+			e.printStackTrace();
+		}
+		System.out.println("End of song");
+	}
 	
-	public static void main(String args[]){
+	
+	public static void main(String args[]) throws IOException{
 		
 		//TODO: read port number from config file.
 		int port = 9999;
 		MusicServer server = new MusicServer(args, port);
 		server.startUp();
+		System.out.println("Press enter to start music multicast.");
+		new BufferedReader(new InputStreamReader(System.in)).readLine();
+		server.playSong();
 	}
+	
  
 }
