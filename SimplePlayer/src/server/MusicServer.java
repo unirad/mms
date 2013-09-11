@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javazoom.jl.player.Player;
 
@@ -31,7 +32,7 @@ public class MusicServer {
 		
 		//TODO: this can be configured using a config attribute
 		// max clients.
-		MAX_CLIENTS = 2;
+		MAX_CLIENTS = 0;
 		
 		
 		if(playList.length <1)
@@ -88,12 +89,30 @@ public class MusicServer {
 	public void playSong(){
 
 		try {
+			
+			Date curr;
+			Date prev;
+			int counter=0;
+			prev= new Date();
+			curr= new Date();
 			while(bis.available()>0)
-			{
-				int byt = bis.read();
-				for(BufferedOutputStream bos : outputStreams){
-					bos.write(byt);
+			{ 
+				if((curr.getTime()-prev.getTime())<1000){
+															int byt = bis.read();
+															counter++;
+															curr=new Date();
+														}
+				else{
+					System.out.println("Number of ints processed this second:"+counter);
+					counter=0;
+					prev=curr;
+					curr=new Date();
 				}
+				//for(BufferedOutputStream bos : outputStreams){
+					//bos.write(byt);
+				//}
+				
+				
 			}
 		} catch (IOException e) {
 			System.out.println("Error: IOException while playing song.");
