@@ -21,6 +21,7 @@ public class Mp3Info {
 	String composer;
 	String encoding;
 	double fps;
+	int frameSize;
 	Duration duration;
 	int samplingFrequency;
 	boolean vbr;
@@ -38,7 +39,7 @@ public class Mp3Info {
 //            			+ properties.get(o.toString()).toString());
 //            	
 //            }
-            
+            frameSize= (Integer) properties.get("mp3.framesize.bytes");
             track = properties.get("mp3.id3tag.track").toString();
         	copyright = (Boolean)properties.get("mp3.copyright");
         	framesLength = (Integer)properties.get("mp3.length.frames");
@@ -119,10 +120,10 @@ public class Mp3Info {
 		try{
 		return "Mp3Info \nmp3FileName = " + mp3FileName + "\n properties = "
 				+ properties + "\n track = " + track + "\n copyright = " + copyright
-				+ "\n framesLength = " + framesLength + "\n album = " + album
+				+ "\n framesLength = " + framesLength + "\n framesSize = " + frameSize+ "\n album = " + album
 				+ "\n date = " + date + "\n genre = " + genre + "\n artist = "  + artist
 				+ "\n title = " + title + "\n composer = " + composer + "\n encoding = "
-				+ encoding + "\n fps = " + fps + "\n duration = " + duration.getHumanReadableForm()
+				+ encoding + "\n fps = " + fps //+"\n duration = " + duration.getHumanReadableForm()
 				+ "\n samplingFrequency = " + samplingFrequency + "\n vbr = " + vbr
 				+ "\n original = " + original + "\n";
 		}
