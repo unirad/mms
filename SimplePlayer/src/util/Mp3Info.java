@@ -123,7 +123,7 @@ public class Mp3Info {
 				+ "\n framesLength = " + framesLength + "\n framesSize = " + frameSize+ "\n album = " + album
 				+ "\n date = " + date + "\n genre = " + genre + "\n artist = "  + artist
 				+ "\n title = " + title + "\n composer = " + composer + "\n encoding = "
-				+ encoding + "\n fps = " + fps //+"\n duration = " + duration.getHumanReadableForm()
+				+ encoding + "\n fps = " + fps + "\n duration = " + (duration !=null ?duration.getHumanReadableForm():"null")
 				+ "\n samplingFrequency = " + samplingFrequency + "\n vbr = " + vbr
 				+ "\n original = " + original + "\n";
 		}
